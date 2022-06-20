@@ -4,10 +4,11 @@ import lombok.Data;
 
 @Data
 public class ArticleResponseDto {
-    private Long bookId;
+    private Long articleId;
     private String title;
-    private String author;
     private String genre;
     private String year;
-    private String imageAsBase64;
+    private String[] authors;
+    private String articleAsBase64;
+    private String creator;
 }

@@ -34,49 +34,49 @@ public class ArticleService {
     }
     ///home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book3.jpeg
     private static List<Article> getHardCodedBooks(){
-        Article book1 = new Article(1L, "Book1", "Author1", "Genre1", "1900", saveImageAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"));
-        Article book2 = new Article(2L, "Book2", "Author2", "Genre2", "1902", saveImageAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book2.jpg"));
-        Article book3 = new Article(3L, "Book3", "Author3", "Genre3", "1903", saveImageAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book3.jpeg"));
-        Article book4 = new Article(4L, "Book4", "Author4", "Genre4", "1904", saveImageAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book4.jpeg"));
-        Article book5 = new Article(5L, "Book5", "Author5", "Genre5", "1905", saveImageAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book5.jpg"));
+        Article article1 = Article.createArticle(1L, "Article1", "Genre1", "1900", new String[]{"Aleks"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
+        Article article2 = Article.createArticle(2L, "Article2", "Genre2", "1900", new String[]{"Aleks2"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
+        Article article3 = Article.createArticle(3L, "Article3", "Genre3", "1900", new String[]{"Aleks3"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
+        Article article4 = Article.createArticle(4L, "Article4", "Genre4", "1900", new String[]{"Aleks4"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
+        Article article5 = Article.createArticle(5L, "Article5", "Genre5", "1900", new String[]{"Aleks5"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
 
         List<Article> returnList = new ArrayList<>();
-        returnList.add(book1);
-        returnList.add(book2);
-        returnList.add(book3);
-        returnList.add(book4);
-        returnList.add(book5);
+        returnList.add(article1);
+        returnList.add(article2);
+        returnList.add(article3);
+        returnList.add(article4);
+        returnList.add(article5);
 
         return returnList;
     }
 
     private List<ArticleResponseDto> getAllBooksFinalObject() {
-        List<Article> booksFromStorage = getHardCodedBooks();
-        List<ArticleResponseDto> booksResponse = new ArrayList<>();
+        List<Article> articlesFromStorage = getHardCodedBooks();
+        List<ArticleResponseDto> articlesResponse = new ArrayList<>();
 
-        IntStream.range(0, booksFromStorage.size())
+        IntStream.range(0, articlesFromStorage.size())
                 .forEach(index -> {
-                    ArticleResponseDto book = new ArticleResponseDto();
-                    book.setBookId(booksFromStorage.get(index).getBookId());
-                    book.setTitle(booksFromStorage.get(index).getTitle());
-                    book.setAuthor(booksFromStorage.get(index).getAuthor());
-                    book.setGenre(booksFromStorage.get(index).getGenre());
-                    book.setYear(booksFromStorage.get(index).getYear());
-                    String imageInBase64 = convertImageFromByteArrayToBase64(booksFromStorage.get(index).getImage());
-                    book.setImageAsBase64(imageInBase64);
+                    ArticleResponseDto article = new ArticleResponseDto();
+                    article.setArticleId(articlesFromStorage.get(index).getArticleId());
+                    article.setTitle(articlesFromStorage.get(index).getTitle());
+                    article.setGenre(articlesFromStorage.get(index).getGenre());
+                    article.setYear(articlesFromStorage.get(index).getYear());
+                    article.setAuthors(articlesFromStorage.get(index).getAuthors());
+                    String articleInBase64 = convertArticleFromByteArrayToBase64(articlesFromStorage.get(index).getArticlePdf());
+                    article.setArticleAsBase64(articleInBase64);
 
-                    booksResponse.add(book);
+                    articlesResponse.add(article);
                 });
 
-        return booksResponse;
+        return articlesResponse;
     }
 
-    private static byte[] saveImageAsByteArray(String imagePath) {
+    private static byte[] saveArticleAsByteArray(String articlePath) {
         try{
-//            BufferedImage image = ImageIO.read(new File(imagePath));
+//            BufferedImage image = ImageIO.read(new File(articlePath));
 //            ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 //            ImageIO.write(image, "jpg", outStreamObj);
-            byte[] bytes = Files.readAllBytes(Paths.get(imagePath));
+            byte[] bytes = Files.readAllBytes(Paths.get(articlePath));
 //            return outStreamObj.toByteArray();
             return bytes;
         } catch (IOException ioex) {
@@ -87,7 +87,7 @@ public class ArticleService {
         return new byte[]{};
     }
 
-    private static String convertImageFromByteArrayToBase64(byte[] image) {
+    private static String convertArticleFromByteArrayToBase64(byte[] image) {
 //        String result = Base64Utils.encodeToString(image);
         String result = Base64.getEncoder().encodeToString(image);
 //        System.out.println(result);
