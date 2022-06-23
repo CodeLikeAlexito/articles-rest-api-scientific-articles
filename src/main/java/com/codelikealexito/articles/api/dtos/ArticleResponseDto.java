@@ -9,6 +9,6 @@ public class ArticleResponseDto {
     private String genre;
     private String year;
     private String[] authors;
-    private String articleAsBase64;
+    private String coverPage;
     private String creator;
 }

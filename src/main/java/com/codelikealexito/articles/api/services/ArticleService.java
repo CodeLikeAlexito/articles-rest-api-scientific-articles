@@ -2,6 +2,7 @@ package com.codelikealexito.articles.api.services;
 
 import com.codelikealexito.articles.api.entites.Article;
 import com.codelikealexito.articles.api.dtos.ArticleResponseDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import java.util.Base64;
@@ -21,24 +23,23 @@ import java.util.Base64;
 @Service
 public class ArticleService {
 
-    public List<Article> getAllBooks() {
-        return getHardCodedBooks();
+    public ResponseEntity<List<ArticleResponseDto>> getAllBooks() {
+        return ResponseEntity.ok(getAllBooksFinalObject());
     }
 
-    public Article getBookByTitle(String title) {
-        List<Article> allBooks = getHardCodedBooks();
+    public List<ArticleResponseDto> getBookByTitle(String title) {
+        List<ArticleResponseDto> allBooks = getAllBooksFinalObject();
         return allBooks.stream()
                 .filter(book -> title.equalsIgnoreCase(book.getTitle()))
-                .findAny()
-                .orElse(null);
+                .collect(Collectors.toList());
     }
     ///home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book3.jpeg
     private static List<Article> getHardCodedBooks(){
-        Article article1 = Article.createArticle(1L, "Article1", "Genre1", "1900", new String[]{"Aleks"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
-        Article article2 = Article.createArticle(2L, "Article2", "Genre2", "1900", new String[]{"Aleks2"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
-        Article article3 = Article.createArticle(3L, "Article3", "Genre3", "1900", new String[]{"Aleks3"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
-        Article article4 = Article.createArticle(4L, "Article4", "Genre4", "1900", new String[]{"Aleks4"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
-        Article article5 = Article.createArticle(5L, "Article5", "Genre5", "1900", new String[]{"Aleks5"}, saveArticleAsByteArray("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"), "codeliekalex");
+        Article article1 = Article.createArticle(1L, "Article1", "Genre1", "1900", new String[]{"Aleks"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book1.jpg"), "codeliekalex");
+        Article article2 = Article.createArticle(2L, "Article2", "Genre2", "1900", new String[]{"Aleks2"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book2.jpg"), "codeliekalex");
+        Article article3 = Article.createArticle(3L, "Article3", "Genre3", "1900", new String[]{"Aleks3"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book3.jpg"), "codeliekalex");
+        Article article4 = Article.createArticle(4L, "Article4", "Genre4", "1900", new String[]{"Aleks4"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book4.jpg"), "codeliekalex");
+        Article article5 = Article.createArticle(5L, "Article5", "Genre5", "1900", new String[]{"Aleks5"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book5.jpg"), "codeliekalex");
 
         List<Article> returnList = new ArrayList<>();
         returnList.add(article1);
@@ -63,7 +64,8 @@ public class ArticleService {
                     article.setYear(articlesFromStorage.get(index).getYear());
                     article.setAuthors(articlesFromStorage.get(index).getAuthors());
                     String articleInBase64 = convertArticleFromByteArrayToBase64(articlesFromStorage.get(index).getArticlePdf());
-                    article.setArticleAsBase64(articleInBase64);
+                    article.setCoverPage(articleInBase64);
+//                    article.setArticleAsBase64(null);
 
                     articlesResponse.add(article);
                 });
