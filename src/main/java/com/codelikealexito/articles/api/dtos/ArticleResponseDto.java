@@ -1,8 +1,11 @@
 package com.codelikealexito.articles.api.dtos;
 
+import com.codelikealexito.articles.api.enums.Status;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ArticleResponseDto {
     private Long articleId;
     private String title;
@@ -16,6 +19,8 @@ public class ArticleResponseDto {
     private String abstractDescription;
     private String academicJournal;
     private String fieldOfScience;
+
+    private Status status;
 
     // client/author username from client table that created/posted the article
     private String creator;

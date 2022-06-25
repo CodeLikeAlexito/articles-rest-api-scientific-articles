@@ -3,8 +3,11 @@ package com.codelikealexito.articles.api.services;
 import com.codelikealexito.articles.api.dtos.ArticleRequestDto;
 import com.codelikealexito.articles.api.entites.Article;
 import com.codelikealexito.articles.api.dtos.ArticleResponseDto;
+import com.codelikealexito.articles.api.enums.Status;
+import com.codelikealexito.articles.api.exceptions.CustomResponseStatusException;
 import com.codelikealexito.articles.api.repositories.ArticleRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import java.util.Base64;
 
 @Service
 @Slf4j
@@ -33,40 +33,84 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    /**
-     *
-     * @return
-     */
-    public ResponseEntity<List<ArticleResponseDto>> getAllBooks() {
-        return ResponseEntity.ok(getAllBooksFinalObject());
+    public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
+        return ResponseEntity.ok(getAllArticlesResponseDto());
     }
 
-    /**
-     *
-     * @param title
-     * @return
-     */
     public List<ArticleResponseDto> getArticleByTitle(String title) {
-        List<ArticleResponseDto> allBooks = getAllBooksFinalObject();
-        return allBooks.stream()
-                .filter(book -> title.equalsIgnoreCase(book.getTitle()))
-                .collect(Collectors.toList());
+        //TODO change from DB not from mocked method
+        List<Article> articles =  articleRepository.findByTitle(title);
+        List<ArticleResponseDto> responseList = new ArrayList<>();
+        IntStream.range(0, articles.size())
+                .forEach( index -> {
+                    responseList.add(setArticleResponseDto(Optional.ofNullable(articles.get(index))));
+                }
+            );
+
+        if(responseList.size() == 0)
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERR_CODE", String.format("Article %s is not found", title));
+
+        return responseList;
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     */
     public ArticleResponseDto getArticleById(Long id) throws Exception {
-        List<ArticleResponseDto> allBooks = getAllBooksFinalObject();
-        return allBooks.stream()
-                .filter(book -> id == book.getArticleId())
-                .findAny()
-                .orElseThrow(() -> new Exception(String.format("Article with id: %d is not found", id)));
+        Optional<Article> article = articleRepository.findById(id);
+        if(article.isEmpty()){
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERR_CODE", String.format("Article with id %d is not found", id));
+        }
+
+        return setArticleResponseDto(article);
     }
 
-    public List<Article> getAllArticlesFromDb() {
+
+    public Article addArticle(ArticleRequestDto articleRequestDto) {
+        //TODO this values needs to come from React FE. For the moment they are hardcoded.
+        byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
+        byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
+
+        Article article = Article.createArticle(articleRequestDto.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
+                , articleCoverAsByteArray, articleAsByteArray, articleRequestDto.getAbstractDescription()
+                , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
+        return articleRepository.save(article);
+    }
+
+    public Article editArticle(ArticleRequestDto articleRequestDto) throws Exception {
+        Article currentArticle = articleRepository.findById(articleRequestDto.getArticleId())
+                .orElseThrow(() ->  new Exception("Article does not exists. Article id: " + articleRequestDto.getArticleId()));
+
+        Article article = Article.createArticle(currentArticle.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
+                , articleRequestDto.getCoverPageImage(), articleRequestDto.getArticlePdf(), articleRequestDto.getAbstractDescription()
+                , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
+        return articleRepository.save(article);
+    }
+
+    public Map<String, Boolean> deleteArticle(Long articleId) throws Exception {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() ->  new Exception("Article does not exists. Article id: " + articleId));
+
+        articleRepository.delete(article);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+
+        return response;
+    }
+
+    private ArticleResponseDto setArticleResponseDto(Optional<Article> article) {
+        return ArticleResponseDto.builder()
+                .articleId(article.get().getArticleId())
+                .title(article.get().getTitle())
+                .yearPublished(article.get().getYearPublished())
+                .authors(article.get().getAuthors())
+                .coverPage(convertFromByteArrayToBase64(article.get().getCoverPageImage()))
+                .articlePdf(convertFromByteArrayToBase64(article.get().getArticlePdf()))
+                .abstractDescription(article.get().getAbstractDescription())
+                .academicJournal(article.get().getAcademicJournal())
+                .fieldOfScience(article.get().getFieldOfScience())
+                .creator(article.get().getCreator())
+                .build();
+    }
+
+    private List<Article> getAllArticlesFromDb() {
         return articleRepository.findAll();
     }
 
@@ -89,13 +133,13 @@ public class ArticleService {
 //    }
 
     //TODO Transforming from Article Entity to ArticleResponseDto, needs to be used only if there are properties in the DTO, that are not in the entity
-    private List<ArticleResponseDto> getAllBooksFinalObject() {
+    private List<ArticleResponseDto> getAllArticlesResponseDto() {
         List<Article> articlesFromStorage = getAllArticlesFromDb();
         List<ArticleResponseDto> articlesResponse = new ArrayList<>();
 
         IntStream.range(0, articlesFromStorage.size())
                 .forEach(index -> {
-                    ArticleResponseDto article = new ArticleResponseDto();
+                    ArticleResponseDto article = ArticleResponseDto.builder().build();
                     article.setArticleId(articlesFromStorage.get(index).getArticleId());
                     article.setTitle(articlesFromStorage.get(index).getTitle());
                     article.setYearPublished(articlesFromStorage.get(index).getYearPublished());
@@ -163,8 +207,22 @@ public class ArticleService {
         System.out.println("Image generated from the byte array.");
     }
 
+    public List<ArticleResponseDto> getAllArticlesByArticleStatus(String status) {
+        List<Article> articlesWithStatus = articleRepository.findAll()
+                .stream()
+                .filter(article -> status.equalsIgnoreCase(article.getStatus()))
+                .toList();
+        List<ArticleResponseDto> resultArticlesList = new ArrayList<>();
 
-    public Article addArticle(ArticleRequestDto articleRequestDto) {
-        return null;
+        if(articlesWithStatus.size() == 0){
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles with status: %s", status));
+        }
+
+        IntStream.range(0, articlesWithStatus.size())
+                .forEach(index -> {
+                    resultArticlesList.add(setArticleResponseDto(Optional.ofNullable(articlesWithStatus.get(index))));
+                });
+
+        return resultArticlesList;
     }
 }

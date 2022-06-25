@@ -5,6 +5,7 @@ import com.codelikealexito.articles.api.dtos.ArticleResponseDto;
 import com.codelikealexito.articles.api.entites.Article;
 import com.codelikealexito.articles.api.services.ArticleService;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class ArticleContoller {
 
     @GetMapping("/")
     public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
-        return articleService.getAllBooks();
+        return articleService.getAllArticles();
     }
 
     @GetMapping("/{title}")
@@ -37,8 +38,25 @@ public class ArticleContoller {
         return ResponseEntity.ok(getArticle);
     }
 
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<ArticleResponseDto>> getAllArticleByArticleStatus(@PathVariable(value = "status") String status) {
+        List<ArticleResponseDto> searchedArticles = articleService.getAllArticlesByArticleStatus(status);
+
+        return ResponseEntity.ok(searchedArticles);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Article> addArticle(@RequestBody ArticleRequestDto articleRequestDto) {
         return ResponseEntity.ok(articleService.addArticle(articleRequestDto));
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<Article> editArticle(@RequestBody ArticleRequestDto articleRequestDto) throws Exception {
+        return ResponseEntity.ok(articleService.editArticle(articleRequestDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, Boolean>> deleteArticle(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(articleService.deleteArticle(id));
     }
 }

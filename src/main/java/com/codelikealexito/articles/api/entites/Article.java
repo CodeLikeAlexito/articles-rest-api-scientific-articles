@@ -1,6 +1,7 @@
 package com.codelikealexito.articles.api.entites;
 
 
+import com.codelikealexito.articles.api.enums.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,10 @@ public class Article {
     @Column
     private String[] authors;
     @Column(name = "cover_page")
+    @Lob
     private byte[] coverPageImage;
     @Column(name = "article_pdf")
+    @Lob
     private byte[] articlePdf;
 
     @Column(name = "abstract_description")
@@ -36,16 +39,18 @@ public class Article {
     @Column(name = "field_of_science")
     private String fieldOfScience;
 
+    private String status;
+
     @Column(name = "creator")
     private String creator;
 
     public static Article createArticle(Long articleId, String title, String yearPublished, String[] authors, byte[] coverPageImage, byte[] articlePdf,
-                                        String abstractDescription, String academicJournal, String fieldOfScience, String creator){
-        return new Article(articleId, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, creator);
+                                        String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
+        return new Article(articleId, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 
     public static Article updateArticle(Long articleId, String title, String yearPublished, String[] authors, byte[] coverPageImage, byte[] articlePdf,
-                                        String abstractDescription, String academicJournal, String fieldOfScience, String creator){
-        return new Article(null, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, creator);
+                                        String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
+        return new Article(null, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 }
