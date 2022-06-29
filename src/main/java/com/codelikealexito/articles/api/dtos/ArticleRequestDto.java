@@ -1,9 +1,9 @@
 package com.codelikealexito.articles.api.dtos;
 
-import com.codelikealexito.articles.api.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @AllArgsConstructor
@@ -13,8 +13,9 @@ public class ArticleRequestDto {
     private String title;
     private String yearPublished;
     private String[] authors;
-    private byte[] coverPageImage;
-    private byte[] articlePdf;
+    private String[] keywords;
+    private String coverPageImage;
+    private String articlePdf;
 
     private String abstractDescription;
     private String academicJournal;

@@ -2,10 +2,12 @@ package com.codelikealexito.articles.api.entites;
 
 
 import com.codelikealexito.articles.api.enums.Status;
+import com.codelikealexito.articles.api.util.DateAudit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
@@ -13,8 +15,9 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 //TODO add shortDescription, description in db ( check if something else is missing as business field )
-public class Article {
+public class Article extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleId;
@@ -25,6 +28,8 @@ public class Article {
     /* Should contain at least 1 author. Can have more than 1 also. */
     @Column
     private String[] authors;
+    @Column
+    private String[] keywords;
     @Column(name = "cover_page")
     @Lob
     private byte[] coverPageImage;
@@ -44,13 +49,13 @@ public class Article {
     @Column(name = "creator")
     private String creator;
 
-    public static Article createArticle(Long articleId, String title, String yearPublished, String[] authors, byte[] coverPageImage, byte[] articlePdf,
+    public static Article createArticle(Long articleId, String title, String yearPublished, String[] authors, String[] keywords, byte[] coverPageImage, byte[] articlePdf,
                                         String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
-        return new Article(articleId, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
+        return new Article(articleId, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 
-    public static Article updateArticle(Long articleId, String title, String yearPublished, String[] authors, byte[] coverPageImage, byte[] articlePdf,
+    public static Article updateArticle(Long articleId, String title, String yearPublished, String[] authors, String[] keywords, byte[] coverPageImage, byte[] articlePdf,
                                         String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
-        return new Article(null, title, yearPublished, authors, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
+        return new Article(null, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 }

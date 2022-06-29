@@ -10,13 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -64,12 +63,30 @@ public class ArticleService {
 
 
     public Article addArticle(ArticleRequestDto articleRequestDto) {
-        //TODO this values needs to come from React FE. For the moment they are hardcoded.
-        byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
-        byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
+        //TODO If article pdf and cover page are not passed in the request body, i hardcode them
+        // TODO Article cover image can stay like this. If image is not selected i should pass default cover image
+        // TODO Article pdf should never be null, so later I need to delete this if
+        if(articleRequestDto.getArticlePdf() == null) {
+            byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
+            String articleAsBase64 = convertFromByteArrayToBase64(articleAsByteArray);
+            articleRequestDto.setArticlePdf(articleAsBase64);
+//            articleRequestDto.setArticlePdf(articleAsByteArray);
+        }
+
+        if(articleRequestDto.getCoverPageImage() == null) {
+            byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
+            String articleCoverAsBase64 = convertFromByteArrayToBase64(articleCoverAsByteArray);
+            articleRequestDto.setCoverPageImage(articleCoverAsBase64);
+//            articleRequestDto.setCoverPageImage(articleCoverAsByteArray);
+        }
+        byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
+        System.out.println(articleCoverAsByteArray);
+//        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
+        byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
+//        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
 
         Article article = Article.createArticle(articleRequestDto.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
-                , articleCoverAsByteArray, articleAsByteArray, articleRequestDto.getAbstractDescription()
+                , articleRequestDto.getKeywords(), articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
                 , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
         return articleRepository.save(article);
     }
@@ -78,8 +95,13 @@ public class ArticleService {
         Article currentArticle = articleRepository.findById(articleRequestDto.getArticleId())
                 .orElseThrow(() ->  new Exception("Article does not exists. Article id: " + articleRequestDto.getArticleId()));
 
+        byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
+//        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
+        byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
+//        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
+
         Article article = Article.createArticle(currentArticle.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
-                , articleRequestDto.getCoverPageImage(), articleRequestDto.getArticlePdf(), articleRequestDto.getAbstractDescription()
+                , articleRequestDto.getKeywords(), articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
                 , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
         return articleRepository.save(article);
     }
@@ -101,8 +123,11 @@ public class ArticleService {
                 .title(article.get().getTitle())
                 .yearPublished(article.get().getYearPublished())
                 .authors(article.get().getAuthors())
+                .keywords(article.get().getKeywords())
                 .coverPage(convertFromByteArrayToBase64(article.get().getCoverPageImage()))
+//                .coverPage(article.get().getCoverPageImage())
                 .articlePdf(convertFromByteArrayToBase64(article.get().getArticlePdf()))
+//                .articlePdf(article.get().getArticlePdf())
                 .abstractDescription(article.get().getAbstractDescription())
                 .academicJournal(article.get().getAcademicJournal())
                 .fieldOfScience(article.get().getFieldOfScience())
@@ -144,10 +169,14 @@ public class ArticleService {
                     article.setTitle(articlesFromStorage.get(index).getTitle());
                     article.setYearPublished(articlesFromStorage.get(index).getYearPublished());
                     article.setAuthors(articlesFromStorage.get(index).getAuthors());
+                    article.setStatus(articlesFromStorage.get(index).getStatus());
+                    article.setKeywords(articlesFromStorage.get(index).getKeywords());
                     String coverPageInBase64 = convertFromByteArrayToBase64(articlesFromStorage.get(index).getCoverPageImage());
                     article.setCoverPage(coverPageInBase64);
+//                    article.setCoverPage(articlesFromStorage.get(index).getCoverPageImage());
                     String articleInBase64 = convertFromByteArrayToBase64(articlesFromStorage.get(index).getArticlePdf());
                     article.setArticlePdf(articleInBase64);
+//                    article.setArticlePdf(articlesFromStorage.get(index).getArticlePdf());
                     article.setAbstractDescription(articlesFromStorage.get(index).getAbstractDescription());
                     article.setAcademicJournal(articlesFromStorage.get(index).getAcademicJournal());
                     article.setFieldOfScience(articlesFromStorage.get(index).getFieldOfScience());
@@ -159,6 +188,7 @@ public class ArticleService {
         return articlesResponse;
     }
 
+    //TODO check this later
     private static byte[] saveArticleAsByteArray(String articlePath) {
         try{
 //            BufferedImage image = ImageIO.read(new File(articlePath));
@@ -176,11 +206,30 @@ public class ArticleService {
     }
 
     private static String convertFromByteArrayToBase64(byte[] image) {
-        String result = Base64.getEncoder().encodeToString(image);
-        return result;
+        byte[] enteredString = Base64.getEncoder().encode(image);
+        byte[] decodedString = new byte[0];
+        try {
+            decodedString = Base64.getDecoder().decode(new String(enteredString).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            log.error("UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
+            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "ERRXXX", "UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
+        }
+        return new String(decodedString);
     }
 
-    // To be deleted later
+    private static byte[] convertFromBase64StringToByteArray(String base64String) {
+        byte[] enteredString = Base64.getEncoder().encode(base64String.getBytes());
+        byte[] decodedString = new byte[0];
+        try {
+            decodedString = Base64.getDecoder().decode(new String(enteredString).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            log.error("UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
+            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "ERRXXX", "UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
+        }
+        return decodedString;
+    }
+
+    //TODO To be deleted later
     private void test() throws IOException {
         // read the image from the file
         BufferedImage image = ImageIO.read(new File("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"));
