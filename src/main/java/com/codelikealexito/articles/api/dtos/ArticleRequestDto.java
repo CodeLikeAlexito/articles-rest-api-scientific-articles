@@ -12,8 +12,8 @@ public class ArticleRequestDto {
     private Long articleId;
     private String title;
     private String yearPublished;
-    private String[] authors;
-    private String[] keywords;
+    private String authors;
+    private String keywords;
     private String coverPageImage;
     private String articlePdf;
 
@@ -21,7 +21,7 @@ public class ArticleRequestDto {
     private String academicJournal;
     private String fieldOfScience;
 
-//    private Status status;
+    private String status;
 
     private String creator;
 }

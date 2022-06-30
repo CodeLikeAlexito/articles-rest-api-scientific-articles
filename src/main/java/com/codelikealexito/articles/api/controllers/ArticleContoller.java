@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -32,6 +33,12 @@ public class ArticleContoller {
         return ResponseEntity.ok(searchedArticle);
     }
 
+    @GetMapping("/{keywords}")
+    public ResponseEntity<List<ArticleResponseDto>> getArticleByKeywords(@PathVariable(value = "keywords") String[] keywords) {
+        List<ArticleResponseDto> searchedArticle = articleService.getArticleByKeywords(keywords);
+        return ResponseEntity.ok(searchedArticle);
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable(value = "id") Long id) throws Exception {
         ArticleResponseDto getArticle = articleService.getArticleById(id);
@@ -50,9 +57,10 @@ public class ArticleContoller {
         return ResponseEntity.ok(articleService.addArticle(articleRequestDto));
     }
 
-    @PutMapping("/")
-    public ResponseEntity<Article> editArticle(@RequestBody ArticleRequestDto articleRequestDto) throws Exception {
-        return ResponseEntity.ok(articleService.editArticle(articleRequestDto));
+    @PutMapping("/{id}")
+    public ResponseEntity<Article> editArticle(@PathVariable(value = "id") Long articleId,
+                                               @RequestBody ArticleRequestDto articleRequestDto) throws Exception {
+        return ResponseEntity.ok(articleService.editArticle(articleId, articleRequestDto));
     }
 
     @DeleteMapping("/{id}")

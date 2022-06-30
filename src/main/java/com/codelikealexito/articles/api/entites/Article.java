@@ -51,11 +51,11 @@ public class Article extends DateAudit {
 
     public static Article createArticle(Long articleId, String title, String yearPublished, String[] authors, String[] keywords, byte[] coverPageImage, byte[] articlePdf,
                                         String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
-        return new Article(articleId, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
+        return new Article(null, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 
     public static Article updateArticle(Long articleId, String title, String yearPublished, String[] authors, String[] keywords, byte[] coverPageImage, byte[] articlePdf,
                                         String abstractDescription, String academicJournal, String fieldOfScience, Status status, String creator){
-        return new Article(null, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
+        return new Article(articleId, title, yearPublished, authors, keywords, coverPageImage, articlePdf, abstractDescription, academicJournal, fieldOfScience, status.name(), creator);
     }
 }

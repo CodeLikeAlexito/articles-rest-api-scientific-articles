@@ -79,30 +79,40 @@ public class ArticleService {
             articleRequestDto.setCoverPageImage(articleCoverAsBase64);
 //            articleRequestDto.setCoverPageImage(articleCoverAsByteArray);
         }
+
         byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
-        System.out.println(articleCoverAsByteArray);
+//        System.out.println(articleCoverAsByteArray);
 //        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
         byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
 //        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
 
-        Article article = Article.createArticle(articleRequestDto.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
-                , articleRequestDto.getKeywords(), articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
+        String[] authors = articleRequestDto.getAuthors().trim().split(",");
+        String[] keywords = articleRequestDto.getKeywords().trim().split(",");
+
+        Article article = Article.createArticle(null, articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), authors
+                , keywords, articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
                 , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
         return articleRepository.save(article);
     }
 
-    public Article editArticle(ArticleRequestDto articleRequestDto) throws Exception {
-        Article currentArticle = articleRepository.findById(articleRequestDto.getArticleId())
+    public Article editArticle(Long articleId, ArticleRequestDto articleRequestDto) throws Exception {
+        Article currentArticle = articleRepository.findById(articleId)
                 .orElseThrow(() ->  new Exception("Article does not exists. Article id: " + articleRequestDto.getArticleId()));
 
         byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
+//        byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(currentArticle.getArticlePdf());
 //        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
         byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
 //        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
 
-        Article article = Article.createArticle(currentArticle.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), articleRequestDto.getAuthors()
-                , articleRequestDto.getKeywords(), articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
-                , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
+        Status status = Status.valueOf(articleRequestDto.getStatus());
+
+        String[] authors = articleRequestDto.getAuthors().trim().split(",");
+        String[] keywords = articleRequestDto.getKeywords().trim().split(",");
+
+        Article article = Article.updateArticle(currentArticle.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), authors
+                , keywords, articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
+                , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), status , articleRequestDto.getCreator());
         return articleRepository.save(article);
     }
 
@@ -132,30 +142,13 @@ public class ArticleService {
                 .academicJournal(article.get().getAcademicJournal())
                 .fieldOfScience(article.get().getFieldOfScience())
                 .creator(article.get().getCreator())
+                .status(article.get().getStatus())
                 .build();
     }
 
     private List<Article> getAllArticlesFromDb() {
         return articleRepository.findAll();
     }
-
-    ///home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book3.jpeg
-//    private static List<Article> getHardCodedBooks(){
-//        Article article1 = Article.createArticle(1L, "Article1", "Genre1", "1900", new String[]{"Aleks"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book1.jpg"), "codeliekalex");
-//        Article article2 = Article.createArticle(2L, "Article2", "Genre2", "1900", new String[]{"Aleks2"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book2.jpg"), "codeliekalex");
-//        Article article3 = Article.createArticle(3L, "Article3", "Genre3", "1900", new String[]{"Aleks3"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book3.jpg"), "codeliekalex");
-//        Article article4 = Article.createArticle(4L, "Article4", "Genre4", "1900", new String[]{"Aleks4"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book4.jpg"), "codeliekalex");
-//        Article article5 = Article.createArticle(5L, "Article5", "Genre5", "1900", new String[]{"Aleks5"}, saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/Book5.jpg"), "codeliekalex");
-//
-//        List<Article> returnList = new ArrayList<>();
-//        returnList.add(article1);
-//        returnList.add(article2);
-//        returnList.add(article3);
-//        returnList.add(article4);
-//        returnList.add(article5);
-//
-//        return returnList;
-//    }
 
     //TODO Transforming from Article Entity to ArticleResponseDto, needs to be used only if there are properties in the DTO, that are not in the entity
     private List<ArticleResponseDto> getAllArticlesResponseDto() {
@@ -273,5 +266,16 @@ public class ArticleService {
                 });
 
         return resultArticlesList;
+    }
+
+    public List<ArticleResponseDto> getArticleByKeywords(String[] keywords) {
+
+//        List<Article> articles = articleRepository.findAll()
+//                .stream()
+//                .filter(article -> {
+//                    Arrays.stream(keywords).filter(keyword -> article.get)
+//                })
+
+        return new ArrayList<>();
     }
 }
