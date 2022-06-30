@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,7 +40,14 @@ public class ArticleService {
 
     public List<ArticleResponseDto> getArticleByTitle(String title) {
         //TODO change from DB not from mocked method
-        List<Article> articles =  articleRepository.findByTitle(title);
+//        List<Article> articles =  articleRepository.findByTitle(title);
+        List<Article> articles =  articleRepository.findAll()
+                .stream()
+                .filter(article -> article.getTitle().toLowerCase(Locale.ROOT).contains(title.toLowerCase(Locale.ROOT)))
+                .toList();
+
+        //validateSearchString
+
         List<ArticleResponseDto> responseList = new ArrayList<>();
         IntStream.range(0, articles.size())
                 .forEach( index -> {
@@ -132,8 +141,8 @@ public class ArticleService {
                 .articleId(article.get().getArticleId())
                 .title(article.get().getTitle())
                 .yearPublished(article.get().getYearPublished())
-                .authors(article.get().getAuthors())
-                .keywords(article.get().getKeywords())
+                .authors(convertFromStringArrayToString(article.get().getAuthors()))
+                .keywords(convertFromStringArrayToString(article.get().getKeywords()))
                 .coverPage(convertFromByteArrayToBase64(article.get().getCoverPageImage()))
 //                .coverPage(article.get().getCoverPageImage())
                 .articlePdf(convertFromByteArrayToBase64(article.get().getArticlePdf()))
@@ -144,6 +153,17 @@ public class ArticleService {
                 .creator(article.get().getCreator())
                 .status(article.get().getStatus())
                 .build();
+    }
+
+    private static String convertFromStringArrayToString(String[] strArr) {
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < strArr.length; i++) {
+            sb.append(strArr[i]);
+        }
+        String resStr = Arrays.toString(strArr);
+        String newStr = resStr.replace("[", "");
+        String newestStr = newStr.replace("]", "");
+        return newestStr;
     }
 
     private List<Article> getAllArticlesFromDb() {
@@ -161,9 +181,9 @@ public class ArticleService {
                     article.setArticleId(articlesFromStorage.get(index).getArticleId());
                     article.setTitle(articlesFromStorage.get(index).getTitle());
                     article.setYearPublished(articlesFromStorage.get(index).getYearPublished());
-                    article.setAuthors(articlesFromStorage.get(index).getAuthors());
+                    article.setAuthors(convertFromStringArrayToString(articlesFromStorage.get(index).getAuthors()));
                     article.setStatus(articlesFromStorage.get(index).getStatus());
-                    article.setKeywords(articlesFromStorage.get(index).getKeywords());
+                    article.setKeywords(convertFromStringArrayToString(articlesFromStorage.get(index).getKeywords()));
                     String coverPageInBase64 = convertFromByteArrayToBase64(articlesFromStorage.get(index).getCoverPageImage());
                     article.setCoverPage(coverPageInBase64);
 //                    article.setCoverPage(articlesFromStorage.get(index).getCoverPageImage());
@@ -220,33 +240,6 @@ public class ArticleService {
             throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "ERRXXX", "UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
         }
         return decodedString;
-    }
-
-    //TODO To be deleted later
-    private void test() throws IOException {
-        // read the image from the file
-        BufferedImage image = ImageIO.read(new File("/home/alex/IdeaProjects/mkd-cars/books-api/src/main/java/com/codelikealexito/books/api/images/Book1.jpg"));
-
-        // create the object of ByteArrayOutputStream class
-        ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-
-        // write the image into the object of ByteArrayOutputStream class
-        ImageIO.write(image, "jpg", outStreamObj);
-
-        // create the byte array from image
-        byte [] byteArray = outStreamObj.toByteArray();
-        System.out.println(byteArray);
-
-        // create the object of ByteArrayInputStream class
-        // and initialized it with the byte array.
-        ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteArray);
-
-        // read image from byte array
-        BufferedImage newImage = ImageIO.read(inStreambj);
-
-        // write output image
-        ImageIO.write(newImage, "jpg", new File("outputImage.jpg"));
-        System.out.println("Image generated from the byte array.");
     }
 
     public List<ArticleResponseDto> getAllArticlesByArticleStatus(String status) {
@@ -310,6 +303,26 @@ public class ArticleService {
 
         if(articles.size() == 0) {
             throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles with field of science: %s", science));
+        }
+
+        IntStream.range(0, articles.size())
+                .forEach(index -> {
+                    resultArticles.add(setArticleResponseDto(Optional.ofNullable(articles.get(index))));
+                });
+
+        return resultArticles;
+    }
+
+    public List<ArticleResponseDto> getArticlesForUser(String username) {
+        List<Article> articles = articleRepository.findAll()
+                .stream()
+                .filter(article -> article.getCreator().toLowerCase().contains(username.toLowerCase()))
+                .toList();
+
+        List<ArticleResponseDto> resultArticles = new ArrayList<>();
+
+        if(articles.size() == 0) {
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles created by: %s", username));
         }
 
         IntStream.range(0, articles.size())

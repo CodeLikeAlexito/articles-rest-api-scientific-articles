@@ -58,6 +58,13 @@ public class ArticleContoller {
         return ResponseEntity.ok(searchedArticles);
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<List<ArticleResponseDto>> getArticleByUsername(@PathVariable(value = "username") String username) {
+        List<ArticleResponseDto> searchedArticles = articleService.getArticlesForUser(username);
+
+        return ResponseEntity.ok(searchedArticles);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Article> addArticle(@RequestBody ArticleRequestDto articleRequestDto) {
         return ResponseEntity.ok(articleService.addArticle(articleRequestDto));
