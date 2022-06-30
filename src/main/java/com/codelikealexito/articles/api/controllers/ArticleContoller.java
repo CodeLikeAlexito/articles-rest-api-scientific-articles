@@ -33,10 +33,16 @@ public class ArticleContoller {
         return ResponseEntity.ok(searchedArticle);
     }
 
-    @GetMapping("/{keywords}")
-    public ResponseEntity<List<ArticleResponseDto>> getArticleByKeywords(@PathVariable(value = "keywords") String[] keywords) {
-        List<ArticleResponseDto> searchedArticle = articleService.getArticleByKeywords(keywords);
+    @GetMapping("/keyword-search/{keyword}")
+    public ResponseEntity<List<ArticleResponseDto>> getArticleByKeywords(@PathVariable(value = "keyword") String keyword) {
+        List<ArticleResponseDto> searchedArticle = articleService.getArticleByKeywords(keyword);
         return ResponseEntity.ok(searchedArticle);
+    }
+
+    @GetMapping("/science/{science}")
+    public ResponseEntity<List<ArticleResponseDto>> getArticleByFieldOfScience(@PathVariable(value = "science") String science) {
+        List<ArticleResponseDto> searchArticle = articleService.getArticleByFieldOfScience(science);
+        return ResponseEntity.ok(searchArticle);
     }
 
     @GetMapping("/id/{id}")

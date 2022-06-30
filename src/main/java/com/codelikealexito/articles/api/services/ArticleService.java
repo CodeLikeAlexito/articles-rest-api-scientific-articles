@@ -89,7 +89,7 @@ public class ArticleService {
         String[] authors = articleRequestDto.getAuthors().trim().split(",");
         String[] keywords = articleRequestDto.getKeywords().trim().split(",");
 
-        Article article = Article.createArticle(null, articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), authors
+        Article article = Article.createArticle(articleRequestDto.getArticleId(), articleRequestDto.getTitle(), articleRequestDto.getYearPublished(), authors
                 , keywords, articleCoverAsByteArray, articlePdfAsByteArray, articleRequestDto.getAbstractDescription()
                 , articleRequestDto.getAcademicJournal(), articleRequestDto.getFieldOfScience(), Status.PENDING, articleRequestDto.getCreator());
         return articleRepository.save(article);
@@ -268,14 +268,55 @@ public class ArticleService {
         return resultArticlesList;
     }
 
-    public List<ArticleResponseDto> getArticleByKeywords(String[] keywords) {
+    public List<ArticleResponseDto> getArticleByKeywords(String keyword) {
 
-//        List<Article> articles = articleRepository.findAll()
-//                .stream()
-//                .filter(article -> {
-//                    Arrays.stream(keywords).filter(keyword -> article.get)
-//                })
+        List<ArticleResponseDto> resultList = new ArrayList<>();
+        List<Article> articles = articleRepository.findAll();
+        //TODO This search is better to be done in a select in database
+        // I have selected to do it here to demonstrate java code
+        // ALso it is better to be rewritten in java 8+ standard
+        for (Article article : articles) {
+            for (String word : article.getKeywords()) {
+                if(word.toLowerCase().contains(keyword.toLowerCase())) {
+                    resultList.add(setArticleResponseDto(Optional.of(article)));
+                }
+            }
+        }
 
-        return new ArrayList<>();
+//        articles.forEach(article -> {
+//            Arrays.stream(article.getKeywords()).toList()
+//                    .stream().filter(word -> word.toLowerCase().contains(keyword.toLowerCase()))
+//                    .collect(Collectors.toList());
+//        });
+//
+//        resultList = articles.stream()
+//                .filter(article -> Arrays.stream(article.getKeywords())
+//                        .filter(word -> ))
+
+        if(resultList.size() == 0) {
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles that contain keyword: %s", keyword));
+        }
+
+        return resultList;
+    }
+
+    public List<ArticleResponseDto> getArticleByFieldOfScience(String science) {
+        List<Article> articles = articleRepository.findAll()
+                .stream()
+                .filter(article -> article.getFieldOfScience().toLowerCase().contains(science.toLowerCase()))
+                .toList();
+
+        List<ArticleResponseDto> resultArticles = new ArrayList<>();
+
+        if(articles.size() == 0) {
+            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles with field of science: %s", science));
+        }
+
+        IntStream.range(0, articles.size())
+                .forEach(index -> {
+                    resultArticles.add(setArticleResponseDto(Optional.ofNullable(articles.get(index))));
+                });
+
+        return resultArticles;
     }
 }
