@@ -1,0 +1,5 @@
+File 1 = "Cihan H. Dagli, Editor in Chief An Efficient Multi-Objective Meta-heuristic Method for Probabilistic Transmission Network Planning"
+File 2 = "Anupama D. S., Sahana D. Gowda Clustering Of Web User Sessions To Maintain Occurrence Of Sequence In Navigation Pattern"
+File 3 = "Amel Benabbou, Safia Nait Bahloul Specification-based Approach for Denotational Semantic of Orthogonal Object/Relational DBMS"
+File 4 = "Bernhard Gramlich, Strategic Issues, Problems and Challenges in Inductive Theorem Proving"
+File 5 = "Victor Raskin, Theory, methodology, and implementation of robotic intelligence and communication"

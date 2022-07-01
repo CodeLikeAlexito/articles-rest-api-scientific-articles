@@ -1,0 +1,126 @@
+[
+  {
+    "article_id": 1,
+    "reference_text": "1. L.L. Garver, Transmission Network Estimation Using Linear Programming, IEEE Trans. Power Apparatus Syst., Vol. PAS-89, No. 7, 1688-1697(1970)."
+  },
+  {
+    "article_id": 1,
+    "reference_text": "2. Anupama D. S., Sahana D. Gowda Clustering Of Web User Sessions To Maintain Occurrence Of Sequence In Navigation Pattern"
+  },
+  {
+    "article_id": 1,
+    "reference_text": "3. Amel Benabbou, Safia Nait Bahloul Specification-based Approach for Denotational Semantic of Orthogonal Object/Relational DBMS"
+  },
+  {
+    "article_id": 1,
+    "reference_text": "4. R. Romero, and A. Monticelli, A Zero-One Implicit Enumeration Method for Optimizing Investments in Transmission Expansion Planning."
+  },
+  {
+    "article_id": 1,
+    "reference_text": "5. A. Monticelli, A. Santos Jr., M.V.F. Pereira, S.H. Cunha, B.J. Parker, and J.C.G. Praca, Interactive Transmission Network Planning using a Least-Effort Criterion, IEEE Tra"
+  },
+  {
+    "article_id": 1,
+    "reference_text": "6. G. C. Oliveira, A. P. C. Costa, and S. Binato, Large Scale Transmission Network Planning using Optimization and "
+  },
+  {
+    "article_id": 1,
+    "reference_text": "7. S. Kirkpatrick, C. D. Gelatt and M. P. Vecchi, Optimization by Simulated Annealing."
+  },
+  {
+    "article_id": 1,
+    "reference_text": "8. D. E. Goldberg, Genetic Algorithm in Search, Optimization and Machine Learning, Addison Wesley Publishing Company, USA(1989)."
+  },
+  {
+    "article_id": 1,
+    "reference_text": "9. F. Glover, Tabu Search, Part I, ORSA Journal on Computing, Vol. 1, No. 3, 190-206(1989)."
+  },
+  {
+    "article_id": 1,
+    "reference_text": "10. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 2,
+    "reference_text": "1. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 2,
+    "reference_text": "2. Cihan H. Dagli, Editor in Chief An Efficient Multi-Objective Meta-heuristic Method for Probabilistic Transmission Network Planning"
+  },
+  {
+    "article_id": 2,
+    "reference_text": "3. Bernhard Gramlich, Strategic Issues, Problems and Challenges in Inductive Theorem Proving"
+  },
+  {
+    "article_id": 2,
+    "reference_text": "4. Victor Raskin, Theory, methodology, and implementation of robotic intelligence and communication"
+  },
+  {
+    "article_id": 2,
+    "reference_text": "5. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 2,
+    "reference_text": "6. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 3,
+    "reference_text": "1. Cihan H. Dagli, Editor in Chief An Efficient Multi-Objective Meta-heuristic Method for Probabilistic Transmission Network Planning"
+  },
+  {
+    "article_id": 3,
+    "reference_text": "3. Bernhard Gramlich, Strategic Issues, Problems and Challenges in Inductive Theorem Proving"
+  },
+  {
+    "article_id": 3,
+    "reference_text": "4. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 3,
+    "reference_text": "5. M. Dorigo and T. Stuetzle, Ant Colony Optimization, Bradford Books (2004)."
+  },
+  {
+    "article_id": 4,
+    "reference_text": "1. Cihan H. Dagli, Editor in Chief An Efficient Multi-Objective Meta-heuristic Method for Probabilistic Transmission Network Planning"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "2. Anupama D. S., Sahana D. Gowda Clustering Of Web User Sessions To Maintain Occurrence Of Sequence In Navigation Pattern"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "3. Amel Benabbou, Safia Nait Bahloul Specification-based Approach for Denotational Semantic of Orthogonal Object/Relational DBMS"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "4. Victor Raskin, Theory, methodology, and implementation of robotic intelligence and communication"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "5. Mock"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "6. Mock data 1"
+  },
+  {
+    "article_id": 4,
+    "reference_text": "7. Mock ddata 2"
+  },
+  {
+    "article_id": 5,
+    "reference_text": "1. Amel Benabbou, Safia Nait Bahloul Specification-based Approach for Denotational Semantic of Orthogonal Object/Relational DBMS"
+  },
+  {
+    "article_id": 5,
+    "reference_text": "2. Bernhard Gramlich, Strategic Issues, Problems and Challenges in Inductive Theorem Proving"
+  },
+  {
+    "article_id": 5,
+    "reference_text": "7. Mock ddata 2"
+  },
+  {
+    "article_id": 5,
+    "reference_text": "7. Mock ddata 2"
+  }
+]

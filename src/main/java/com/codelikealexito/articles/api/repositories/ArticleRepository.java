@@ -9,7 +9,4 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByTitle(String title);
-
-//    @Query(value = "select * from Article a where a.keywords like (%:keyword%)", nativeQuery=true)
-//    List<Article> findArticlesByKeywords(@Param("keyword") String keyword);
 }
