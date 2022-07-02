@@ -17,7 +17,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-//TODO add shortDescription, description in db ( check if something else is missing as business field )
 public class Article extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

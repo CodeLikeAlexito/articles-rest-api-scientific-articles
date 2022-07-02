@@ -10,18 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -39,14 +31,10 @@ public class ArticleService {
     }
 
     public List<ArticleResponseDto> getArticleByTitle(String title) {
-        //TODO change from DB not from mocked method
-//        List<Article> articles =  articleRepository.findByTitle(title);
         List<Article> articles =  articleRepository.findAll()
                 .stream()
                 .filter(article -> article.getTitle().toLowerCase(Locale.ROOT).contains(title.toLowerCase(Locale.ROOT)))
                 .toList();
-
-        //validateSearchString
 
         List<ArticleResponseDto> responseList = new ArrayList<>();
         IntStream.range(0, articles.size())
@@ -72,28 +60,21 @@ public class ArticleService {
 
 
     public Article addArticle(ArticleRequestDto articleRequestDto) {
-        //TODO If article pdf and cover page are not passed in the request body, i hardcode them
-        // TODO Article cover image can stay like this. If image is not selected i should pass default cover image
-        // TODO Article pdf should never be null, so later I need to delete this if
+
         if(articleRequestDto.getArticlePdf() == null) {
             byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
             String articleAsBase64 = convertFromByteArrayToBase64(articleAsByteArray);
             articleRequestDto.setArticlePdf(articleAsBase64);
-//            articleRequestDto.setArticlePdf(articleAsByteArray);
         }
 
         if(articleRequestDto.getCoverPageImage() == null) {
             byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
             String articleCoverAsBase64 = convertFromByteArrayToBase64(articleCoverAsByteArray);
             articleRequestDto.setCoverPageImage(articleCoverAsBase64);
-//            articleRequestDto.setCoverPageImage(articleCoverAsByteArray);
         }
 
         byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
-//        System.out.println(articleCoverAsByteArray);
-//        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
         byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
-//        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
 
         String[] authors = articleRequestDto.getAuthors().trim().split(",");
         String[] keywords = articleRequestDto.getKeywords().trim().split(",");
@@ -112,21 +93,16 @@ public class ArticleService {
             byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
             String articleAsBase64 = convertFromByteArrayToBase64(articleAsByteArray);
             articleRequestDto.setArticlePdf(articleAsBase64);
-//            articleRequestDto.setArticlePdf(articleAsByteArray);
         }
 
         if(articleRequestDto.getCoverPageImage() == null) {
             byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
             String articleCoverAsBase64 = convertFromByteArrayToBase64(articleCoverAsByteArray);
             articleRequestDto.setCoverPageImage(articleCoverAsBase64);
-//            articleRequestDto.setCoverPageImage(articleCoverAsByteArray);
         }
 
         byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
-//        byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(currentArticle.getArticlePdf());
-//        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
         byte[] articleCoverAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getCoverPageImage());
-//        byte[] articlePdfAsByteArray = articleRequestDto.getArticlePdf();
 
         Status status = Status.valueOf(articleRequestDto.getStatus());
 
@@ -158,9 +134,7 @@ public class ArticleService {
                 .authors(convertFromStringArrayToString(article.get().getAuthors()))
                 .keywords(convertFromStringArrayToString(article.get().getKeywords()))
                 .coverPage(convertFromByteArrayToBase64(article.get().getCoverPageImage()))
-//                .coverPage(article.get().getCoverPageImage())
                 .articlePdf(convertFromByteArrayToBase64(article.get().getArticlePdf()))
-//                .articlePdf(article.get().getArticlePdf())
                 .abstractDescription(article.get().getAbstractDescription())
                 .academicJournal(article.get().getAcademicJournal())
                 .fieldOfScience(article.get().getFieldOfScience())
@@ -184,7 +158,6 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    //TODO Transforming from Article Entity to ArticleResponseDto, needs to be used only if there are properties in the DTO, that are not in the entity
     private List<ArticleResponseDto> getAllArticlesResponseDto() {
         List<Article> articlesFromStorage = getAllArticlesFromDb();
         List<ArticleResponseDto> articlesResponse = new ArrayList<>();
@@ -200,10 +173,8 @@ public class ArticleService {
                     article.setKeywords(convertFromStringArrayToString(articlesFromStorage.get(index).getKeywords()));
                     String coverPageInBase64 = convertFromByteArrayToBase64(articlesFromStorage.get(index).getCoverPageImage());
                     article.setCoverPage(coverPageInBase64);
-//                    article.setCoverPage(articlesFromStorage.get(index).getCoverPageImage());
                     String articleInBase64 = convertFromByteArrayToBase64(articlesFromStorage.get(index).getArticlePdf());
                     article.setArticlePdf(articleInBase64);
-//                    article.setArticlePdf(articlesFromStorage.get(index).getArticlePdf());
                     article.setAbstractDescription(articlesFromStorage.get(index).getAbstractDescription());
                     article.setAcademicJournal(articlesFromStorage.get(index).getAcademicJournal());
                     article.setFieldOfScience(articlesFromStorage.get(index).getFieldOfScience());
@@ -215,18 +186,12 @@ public class ArticleService {
         return articlesResponse;
     }
 
-    //TODO check this later
     private static byte[] saveArticleAsByteArray(String articlePath) {
         try{
-//            BufferedImage image = ImageIO.read(new File(articlePath));
-//            ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-//            ImageIO.write(image, "jpg", outStreamObj);
             byte[] bytes = Files.readAllBytes(Paths.get(articlePath));
-//            return outStreamObj.toByteArray();
             return bytes;
         } catch (IOException ioex) {
             System.out.println("IO Exception occurred while writing image in byte array.");
-//            ioex.printStackTrace();
         }
         System.out.println("Here");
         return new byte[]{};
@@ -289,16 +254,6 @@ public class ArticleService {
                 }
             }
         }
-
-//        articles.forEach(article -> {
-//            Arrays.stream(article.getKeywords()).toList()
-//                    .stream().filter(word -> word.toLowerCase().contains(keyword.toLowerCase()))
-//                    .collect(Collectors.toList());
-//        });
-//
-//        resultList = articles.stream()
-//                .filter(article -> Arrays.stream(article.getKeywords())
-//                        .filter(word -> ))
 
         if(resultList.size() == 0) {
             throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles that contain keyword: %s", keyword));

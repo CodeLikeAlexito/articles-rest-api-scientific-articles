@@ -22,6 +22,5 @@ public class ArticleRequestDto {
     private String fieldOfScience;
 
     private String status;
-
     private String creator;
 }

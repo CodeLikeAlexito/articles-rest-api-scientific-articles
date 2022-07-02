@@ -34,11 +34,6 @@ public class ReferencesController {
         return ResponseEntity.ok(referenceService.fillDatabaseEntityWithData());
     }
 
-//    @GetMapping("/reference/count/{title}")
-//    public ResponseEntity<Map<String, Long>> countedNumberOfCitedArticle(@PathVariable(value = "title") String articleTitle) {
-//        return ResponseEntity.ok(referenceService.countedNumberOfCitedArticle(articleTitle));
-//    }
-
     @GetMapping("/count/{title}")
     public ResponseEntity<Long> countedNumberOfCitedArticle(@PathVariable(value = "title") String articleTitle) {
         return ResponseEntity.ok(referenceService.countNumberOfCitedArticle(articleTitle));

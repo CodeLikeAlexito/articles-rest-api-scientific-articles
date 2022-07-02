@@ -2,16 +2,13 @@ package com.codelikealexito.articles.api.controllers;
 
 import com.codelikealexito.articles.api.dtos.ArticleRequestDto;
 import com.codelikealexito.articles.api.dtos.ArticleResponseDto;
-import com.codelikealexito.articles.api.dtos.ReferenceDto;
 import com.codelikealexito.articles.api.entites.Article;
 import com.codelikealexito.articles.api.services.ArticleService;
 import java.util.List;
 import java.util.Map;
 
-import com.codelikealexito.articles.api.util.ReferenceHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

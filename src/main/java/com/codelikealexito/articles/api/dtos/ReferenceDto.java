@@ -1,6 +1,5 @@
 package com.codelikealexito.articles.api.dtos;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

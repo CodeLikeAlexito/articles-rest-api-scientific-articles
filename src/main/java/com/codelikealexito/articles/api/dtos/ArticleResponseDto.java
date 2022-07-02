@@ -22,7 +22,5 @@ public class ArticleResponseDto {
     private String fieldOfScience;
 
     private String status;
-
-    // client/author username from client table that created/posted the article
     private String creator;
 }
