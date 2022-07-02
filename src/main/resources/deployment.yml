@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: articles-api
-          image: articles-api:v4
+          image: articles-api:v5
           ports:
             - containerPort: 4002
           env:   # Setting Environmental Variables
