@@ -10,7 +10,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/v1/api/article")
+@RequestMapping("/v1/api/article/reference")
 public class ReferencesController {
 
     private final ReferenceService referenceService;
@@ -19,17 +19,17 @@ public class ReferencesController {
         this.referenceService = referenceService;
     }
 
-    @GetMapping("/reference/")
+    @GetMapping("/")
     public ResponseEntity<List<ReferenceDto>> getAllReferences() {
         return ResponseEntity.ok(referenceService.getAllReferences());
     }
 
-    @GetMapping("/reference/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<ReferenceDto>> getAllReferenceForArticle(@PathVariable(value = "id") Long articleId) {
         return ResponseEntity.ok(referenceService.getAllReferencesForArticle(articleId));
     }
 
-    @PostMapping("/reference/")
+    @PostMapping("/")
     public ResponseEntity<Map<String, Boolean>> postReferencesToDb() {
         return ResponseEntity.ok(referenceService.fillDatabaseEntityWithData());
     }
@@ -39,7 +39,7 @@ public class ReferencesController {
 //        return ResponseEntity.ok(referenceService.countedNumberOfCitedArticle(articleTitle));
 //    }
 
-    @GetMapping("/reference/count/{title}")
+    @GetMapping("/count/{title}")
     public ResponseEntity<Long> countedNumberOfCitedArticle(@PathVariable(value = "title") String articleTitle) {
         return ResponseEntity.ok(referenceService.countNumberOfCitedArticle(articleTitle));
     }
