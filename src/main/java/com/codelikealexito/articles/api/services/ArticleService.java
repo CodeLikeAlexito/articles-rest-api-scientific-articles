@@ -108,6 +108,20 @@ public class ArticleService {
         Article currentArticle = articleRepository.findById(articleId)
                 .orElseThrow(() ->  new Exception("Article does not exists. Article id: " + articleRequestDto.getArticleId()));
 
+        if(articleRequestDto.getArticlePdf() == null) {
+            byte[] articleAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/pdf/an-efficient-multi-objective-meta-heuristic-method-for-probabilistic-transmission-network-planning.pdf");
+            String articleAsBase64 = convertFromByteArrayToBase64(articleAsByteArray);
+            articleRequestDto.setArticlePdf(articleAsBase64);
+//            articleRequestDto.setArticlePdf(articleAsByteArray);
+        }
+
+        if(articleRequestDto.getCoverPageImage() == null) {
+            byte[] articleCoverAsByteArray = saveArticleAsByteArray("/home/alex/IdeaProjects/academic-articles-spring-api-reactjs/articles-api/src/main/java/com/codelikealexito/articles/api/files/images/Book1.jpg");
+            String articleCoverAsBase64 = convertFromByteArrayToBase64(articleCoverAsByteArray);
+            articleRequestDto.setCoverPageImage(articleCoverAsBase64);
+//            articleRequestDto.setCoverPageImage(articleCoverAsByteArray);
+        }
+
         byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(articleRequestDto.getArticlePdf());
 //        byte[] articlePdfAsByteArray = convertFromBase64StringToByteArray(currentArticle.getArticlePdf());
 //        byte[] articleCoverAsByteArray = articleRequestDto.getCoverPageImage();
