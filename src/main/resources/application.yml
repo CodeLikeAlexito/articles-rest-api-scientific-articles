@@ -3,7 +3,8 @@ spring:
     name: ARTICLE-SERVICE
 
   datasource:
-    url: jdbc:mysql://localhost:3306/articlesDb?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    url: jdbc:mysql://192.168.1.20:3306/articlesDb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+#    url: jdbc:mysql://localhost:3306/articlesDb?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
     username: alex
     password: Sofia@1005
 
@@ -26,7 +27,10 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://172.17.0.2:8761/eureka/
+#      defaultZone: http://localhost:8761/eureka/
   instance:
-    hostname: localhost
+    hostname: 172.17.0.5
+#    hostname: 192.168.1.20
+#    hostname: localhost
 
