@@ -291,7 +291,8 @@ public class ArticleService {
         List<ArticleResponseDto> resultArticles = new ArrayList<>();
 
         if(articles.size() == 0) {
-            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles created by: %s", username));
+//            throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, "SOME_ERROR_CODE", String.format("There are no articles created by: %s", username));
+            return resultArticles;
         }
 
         IntStream.range(0, articles.size())

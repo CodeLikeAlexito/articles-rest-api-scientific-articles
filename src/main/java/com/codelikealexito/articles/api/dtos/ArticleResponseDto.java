@@ -1,6 +1,5 @@
 package com.codelikealexito.articles.api.dtos;
 
-import com.codelikealexito.articles.api.enums.Status;
 import lombok.Builder;
 import lombok.Data;
 
