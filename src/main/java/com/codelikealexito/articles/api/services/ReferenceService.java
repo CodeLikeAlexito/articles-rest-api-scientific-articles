@@ -1,5 +1,6 @@
 package com.codelikealexito.articles.api.services;
 
+import com.codelikealexito.articles.api.dtos.CountReferencesResponseDto;
 import com.codelikealexito.articles.api.dtos.ReferenceDto;
 import com.codelikealexito.articles.api.entites.Reference;
 import com.codelikealexito.articles.api.exceptions.CustomResponseStatusException;
@@ -7,6 +8,7 @@ import com.codelikealexito.articles.api.repositories.ReferenceRepository;
 import com.codelikealexito.articles.api.util.ReferenceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class ReferenceService {
     public List<ReferenceDto> getAllReferencesForArticle(Long articleId){
         List<Reference> allReferences = referenceRepository.findAll()
                 .stream()
-                .filter(reference -> reference.getArticleId() == articleId)
+                .filter(reference -> articleId.equals(reference.getArticleId()) )
                 .toList();
 
         List<ReferenceDto> listReferenceDto = new ArrayList<>();
@@ -51,8 +53,8 @@ public class ReferenceService {
 
         List<ReferenceDto> referencesList = ReferenceHelper.getAllReferencesFromJsonFile();
 
-        if(referencesList.size() == 0) {
-            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "SOME_ERR", "Refernce service fill reference table with data error.");
+        if(referencesList.isEmpty()) {
+            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "SOME_ERR", "Reference service fill reference table with data error.");
         }
 
         IntStream.range(0, referencesList.size())
@@ -61,7 +63,7 @@ public class ReferenceService {
                 });
 
         Map<String, Boolean> resultHashMap = new HashMap<>();
-        resultHashMap.put("instered", true);
+        resultHashMap.put("inserted", true);
 
         return resultHashMap;
     }
@@ -73,11 +75,12 @@ public class ReferenceService {
                 .count();
     }
 
-    public Map<String, Long> countedNumberOfCitedArticle(String articleTitle) {
-        Map<String, Long> result = new HashMap<>();
-        Long count = countNumberOfCitedArticle(articleTitle);
-        result.put("Count: ", count);
-        return result;
+    public CountReferencesResponseDto countedNumberOfCitedArticle(String articleTitle) {
+        Long countRef = countNumberOfCitedArticle(articleTitle);
+
+        return CountReferencesResponseDto
+                .builder().count(countRef)
+                .build();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.codelikealexito.articles.api.controllers;
 
+import com.codelikealexito.articles.api.dtos.CountReferencesResponseDto;
 import com.codelikealexito.articles.api.dtos.ReferenceDto;
 import com.codelikealexito.articles.api.services.ReferenceService;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,8 @@ public class ReferencesController {
     }
 
     @GetMapping("/count/{title}")
-    public ResponseEntity<Long> countedNumberOfCitedArticle(@PathVariable(value = "title") String articleTitle) {
-        return ResponseEntity.ok(referenceService.countNumberOfCitedArticle(articleTitle));
+    public ResponseEntity<CountReferencesResponseDto> countedNumberOfCitedArticle(@PathVariable(value = "title") String articleTitle) {
+        return ResponseEntity.ok(referenceService.countedNumberOfCitedArticle(articleTitle));
     }
 
 }
