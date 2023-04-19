@@ -11,11 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.codelikealexito.articles.api.util.Helper.*;
 
 @Service
 @Slf4j
@@ -187,40 +186,5 @@ public class ArticleService {
                 .filter(article -> article.getCreator().toLowerCase().contains(username.toLowerCase()))
                 .map(articleResponseDTOMapper)
                 .collect(Collectors.toList());
-    }
-
-    private static byte[] convertFromBase64StringToByteArray(String base64String) {
-        byte[] enteredString = Base64.getEncoder().encode(base64String.getBytes());
-        byte[] decodedString = new byte[0];
-        try {
-            decodedString = Base64.getDecoder().decode(new String(enteredString).getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            log.error("UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
-            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "ERRXXX", "UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
-        }
-        return decodedString;
-    }
-
-    private static String convertFromByteArrayToBase64(byte[] image) {
-        byte[] enteredString = Base64.getEncoder().encode(image);
-        byte[] decodedString = new byte[0];
-        try {
-            decodedString = Base64.getDecoder().decode(new String(enteredString).getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            log.error("UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
-            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, "ERRXXX", "UnsupportedEncodingException occurred while trying to convert base64 string to byte array.");
-        }
-        return new String(decodedString);
-    }
-
-    private static byte[] saveArticleAsByteArray(String articlePath) {
-        try{
-            byte[] bytes = Files.readAllBytes(Paths.get(articlePath));
-            return bytes;
-        } catch (IOException ioex) {
-            System.out.println("IO Exception occurred while writing image in byte array.");
-        }
-        System.out.println("Here");
-        return new byte[]{};
     }
 }
