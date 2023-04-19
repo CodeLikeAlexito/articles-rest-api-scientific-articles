@@ -1,7 +1,7 @@
 package com.codelikealexito.articles.api.controllers;
 
 import com.codelikealexito.articles.api.dtos.ArticleRequestDto;
-import com.codelikealexito.articles.api.dtos.ArticleResponseDto;
+import com.codelikealexito.articles.api.dtos.ArticleResponseDTO;
 import com.codelikealexito.articles.api.entites.Article;
 import com.codelikealexito.articles.api.services.ArticleService;
 import java.util.List;
@@ -22,44 +22,44 @@ public class ArticleContoller {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
+    public ResponseEntity<List<ArticleResponseDTO>> getAllArticles() {
         return articleService.getAllArticles();
     }
 
     @GetMapping("/{title}")
-    public ResponseEntity<List<ArticleResponseDto>> getArticleByTitle(@PathVariable(value = "title") String title) {
-        List<ArticleResponseDto> searchedArticle = articleService.getArticleByTitle(title);
+    public ResponseEntity<List<ArticleResponseDTO>> getArticleByTitle(@PathVariable(value = "title") String title) {
+        List<ArticleResponseDTO> searchedArticle = articleService.getArticleByTitle(title);
         return ResponseEntity.ok(searchedArticle);
     }
 
     @GetMapping("/keyword-search/{keyword}")
-    public ResponseEntity<List<ArticleResponseDto>> getArticleByKeywords(@PathVariable(value = "keyword") String keyword) {
-        List<ArticleResponseDto> searchedArticle = articleService.getArticleByKeywords(keyword);
+    public ResponseEntity<List<ArticleResponseDTO>> getArticleByKeywords(@PathVariable(value = "keyword") String keyword) {
+        List<ArticleResponseDTO> searchedArticle = articleService.getArticleByKeywords(keyword);
         return ResponseEntity.ok(searchedArticle);
     }
 
     @GetMapping("/science/{science}")
-    public ResponseEntity<List<ArticleResponseDto>> getArticleByFieldOfScience(@PathVariable(value = "science") String science) {
-        List<ArticleResponseDto> searchArticle = articleService.getArticleByFieldOfScience(science);
+    public ResponseEntity<List<ArticleResponseDTO>> getArticleByFieldOfScience(@PathVariable(value = "science") String science) {
+        List<ArticleResponseDTO> searchArticle = articleService.getArticleByFieldOfScience(science);
         return ResponseEntity.ok(searchArticle);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable(value = "id") Long id) throws Exception {
-        ArticleResponseDto getArticle = articleService.getArticleById(id);
+    public ResponseEntity<ArticleResponseDTO> getArticleById(@PathVariable(value = "id") Long id) throws Exception {
+        ArticleResponseDTO getArticle = articleService.getArticleById(id);
         return ResponseEntity.ok(getArticle);
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<ArticleResponseDto>> getAllArticleByArticleStatus(@PathVariable(value = "status") String status) {
-        List<ArticleResponseDto> searchedArticles = articleService.getAllArticlesByArticleStatus(status);
+    public ResponseEntity<List<ArticleResponseDTO>> getAllArticleByArticleStatus(@PathVariable(value = "status") String status) {
+        List<ArticleResponseDTO> searchedArticles = articleService.getAllArticlesByArticleStatus(status);
 
         return ResponseEntity.ok(searchedArticles);
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<List<ArticleResponseDto>> getArticleByUsername(@PathVariable(value = "username") String username) {
-        List<ArticleResponseDto> searchedArticles = articleService.getArticlesForUser(username);
+    public ResponseEntity<List<ArticleResponseDTO>> getArticleByUsername(@PathVariable(value = "username") String username) {
+        List<ArticleResponseDTO> searchedArticles = articleService.getArticlesForUser(username);
 
         return ResponseEntity.ok(searchedArticles);
     }
