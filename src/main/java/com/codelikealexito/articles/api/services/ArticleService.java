@@ -295,6 +295,8 @@ public class ArticleService {
             return resultArticles;
         }
 
+        // This is test comment
+
         IntStream.range(0, articles.size())
                 .forEach(index -> {
                     resultArticles.add(setArticleResponseDto(Optional.ofNullable(articles.get(index))));
