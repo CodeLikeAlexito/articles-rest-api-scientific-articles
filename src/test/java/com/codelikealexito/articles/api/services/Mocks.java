@@ -3,6 +3,7 @@ package com.codelikealexito.articles.api.services;
 import com.codelikealexito.articles.api.dtos.ArticleRequestDto;
 import com.codelikealexito.articles.api.dtos.ArticleResponseDTO;
 import com.codelikealexito.articles.api.entites.Article;
+import com.codelikealexito.articles.api.entites.Reference;
 import com.codelikealexito.articles.api.enums.Status;
 
 import java.util.ArrayList;
@@ -117,6 +118,9 @@ public class Mocks {
         return articleList;
     }
 
+    public static Reference createMockReference() {
+        return Reference.createReference(1L, 2L, "Mock Reference");
+    }
 
 
 }

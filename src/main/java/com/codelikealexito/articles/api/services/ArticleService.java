@@ -154,20 +154,11 @@ public class ArticleService {
 
     public List<ArticleResponseDTO> getArticleByKeywords(String keyword) {
 
-        List<Article> resultList = new ArrayList<>();
         List<Article> articles = articleRepository.findAll();
-        //TODO This search is better to be done in a select in database
-        // I have selected to do it here to demonstrate java code
-        // ALso it is better to be rewritten in java 8+ standard
-        for (Article article : articles) {
-            for (String word : article.getKeywords()) {
-                if(word.toLowerCase().contains(keyword.toLowerCase())) {
-                    resultList.add(article);
-                }
-            }
-        }
 
-        return resultList.stream()
+        return articles
+                .stream()
+                .filter(article -> Arrays.stream(article.getKeywords()).anyMatch(keyword::contains))
                 .map(articleResponseDTOMapper)
                 .collect(Collectors.toList());
     }
