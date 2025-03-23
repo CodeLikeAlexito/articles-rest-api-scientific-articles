@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0.33
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: Sofia@1005  # change it to your desired password
+      MYSQL_DATABASE: articles_db       # change the database name if needed
+    ports:
+      - "3306:3306"  # expose MySQL port
+    networks:
+      - articles-net
+
+networks:
+  articles-net:
+    driver: bridge

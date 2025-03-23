@@ -34,7 +34,7 @@ public class CustomControllerExceptionHandler {
 
     @ExceptionHandler(CustomResponseStatusException.class)
     public ResponseEntity<ExceptionBody> handleResponseStatusException(CustomResponseStatusException ex){
-        return new ResponseEntity<>(new ExceptionBody(ex.getErrorCode(), "Default message"), HttpStatus.valueOf(ex.getRawStatusCode()));
+        return new ResponseEntity<>(new ExceptionBody(ex.getErrorCode(), "Default message"), HttpStatus.valueOf(ex.getStatusCode().value()));
     }
 
     public static class ExceptionBody {
